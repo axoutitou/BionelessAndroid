@@ -8,10 +8,25 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
+
+import com.opencsv.CSVWriter;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class DataActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -20,6 +35,8 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
     private Sensor gyroscope;
     private long startTime;
     private String activityType;
+    private String fileName;
+    private CSVWriter writer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +44,21 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+        fileName = "MouvementData";
+        File storageDir = getExternalFilesDir("DATA");
+
+        String date =  new SimpleDateFormat("dd-MM-yyyy HH-mm-ss", Locale.getDefault()).format(new Date());
+        String filename = storageDir + File.separator + fileName + "-" + date + ".csv";
+        try {
+            FileWriter fileWriter = new FileWriter(filename, true);
+            writer = new CSVWriter(fileWriter);
+            String[] headers = {"dX-acc", "dY-acc", "dZ-acc", "dX-gyr", "dY-gyr", "dZ-gyr", "time", "activityType"};
+            writer.writeNext(headers);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         setContentView(R.layout.activity_data);
         startTime = System.currentTimeMillis();
 
@@ -54,9 +86,13 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float x = 0;
-        float y = 0;
-        float z = 0;
+        float dXacc = 0;
+        float dYacc = 0;
+        float dZacc = 0;
+
+        float dXgyr = 0;
+        float dYgyr = 0;
+        float dZgyr = 0;
 
         TextView accX = findViewById(R.id.accX);
         TextView accY = findViewById(R.id.accY);
@@ -69,31 +105,38 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         TextView timerTextView = findViewById(R.id.timer);
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            x = event.values[0];
-            y = event.values[1];
-            z = event.values[2];
+            dXacc = event.values[0];
+            dYacc = event.values[1];
+            dZacc = event.values[2];
 
-            accX.setText(Float.toString(x));
-            accY.setText(Float.toString(y));
-            accZ.setText(Float.toString(z));
+            accX.setText(Float.toString(dXacc));
+            accY.setText(Float.toString(dYacc));
+            accZ.setText(Float.toString(dZacc));
 
-            System.out.println("ACCELEROMETRE : Valeurs récupérés : x="+x+" | y="+y+" | z="+z);
+            System.out.println("ACCELEROMETRE : Valeurs récupérés : x="+dXacc+" | y="+dYacc+" | z="+dZacc);
         }
 
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            x = event.values[0];
-            y = event.values[1];
-            z = event.values[2];
+            dXgyr = event.values[0];
+            dYgyr = event.values[1];
+            dZgyr = event.values[2];
 
-            gyrX.setText(Float.toString(x));
-            gyrY.setText(Float.toString(y));
-            gyrZ.setText(Float.toString(z));
+            gyrX.setText(Float.toString(dXgyr));
+            gyrY.setText(Float.toString(dYgyr));
+            gyrZ.setText(Float.toString(dZgyr));
 
-            System.out.println("GYROSCOPE : Valeurs récupérés : x="+x+" | y="+y+" | z="+z);
+            System.out.println("GYROSCOPE : Valeurs récupérés : x="+dXgyr+" | y="+dYgyr+" | z="+dZgyr);
         }
+
         Long instant = System.currentTimeMillis()-startTime;
         float floatInstant = (float)instant;
         timerTextView.setText(String.format("%.1f", floatInstant/1000) );
+
+        String[] values = {Float.toString(dXacc), Float.toString(dYacc), Float.toString(dZacc),
+                Float.toString(dXgyr), Float.toString(dYgyr), Float.toString(dZgyr),
+                Float.toString(floatInstant), activityType};
+        writer.writeNext(values);
+
     }
 
     @Override
@@ -101,7 +144,8 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-    public void onStopClick(View view) {
+    public void onStopClick(View view) throws IOException {
+        writer.close();
         this.finish();
     }
 }
