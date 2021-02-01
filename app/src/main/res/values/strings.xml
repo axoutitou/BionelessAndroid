@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">AndroidSensors</string>
+    <string name="textViewDescr">Cliquer sur le bouton ci-dessous pour démarrer l\'acquisition des données</string>
+    <string name="startButton">Démarrer</string>
+    <string name="textX">X =</string>
+    <string name="textY">Y =</string>
+    <string name="textZ">Z =</string>
 </resources>
