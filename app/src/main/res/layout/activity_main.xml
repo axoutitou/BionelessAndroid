@@ -10,22 +10,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="2">
+        android:weightSum="7">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:gravity="center"
             android:text="@string/textViewDescr"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
+        <RadioGroup
+            android:id="@+id/activityType"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3">
+
+            <RadioButton
+                android:id="@+id/marcher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Marcher" />
+
+            <RadioButton
+                android:id="@+id/courir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Courir" />
+
+            <RadioButton
+                android:id="@+id/immobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Immobile" />
+        </RadioGroup>
+
         <Button
             android:id="@+id/buttonStartSensors"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
             android:onClick="onStartClick"
             android:text="@string/startButton" />
     </LinearLayout>

@@ -11,11 +11,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class DataActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Sensor gyroscope;
+    private long startTime;
+    private String activityType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,14 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         setContentView(R.layout.activity_data);
+        startTime = System.currentTimeMillis();
+
+        Intent intent = getIntent();
+        if (intent.hasExtra("activityType")){
+            activityType = intent.getStringExtra("activityType");
+            TextView activityText = findViewById(R.id.activity);
+            activityText.setText("Enregistrement en cours pour l'activité : "+activityType);
+        }
     }
 
     @Override
@@ -54,6 +66,8 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         TextView gyrY = findViewById(R.id.gyrY);
         TextView gyrZ = findViewById(R.id.gyrZ);
 
+        TextView timerTextView = findViewById(R.id.timer);
+
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             x = event.values[0];
             y = event.values[1];
@@ -77,6 +91,9 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
 
             System.out.println("GYROSCOPE : Valeurs récupérés : x="+x+" | y="+y+" | z="+z);
         }
+        Long instant = System.currentTimeMillis()-startTime;
+        float floatInstant = (float)instant;
+        timerTextView.setText(String.format("%.1f", floatInstant/1000) );
     }
 
     @Override
