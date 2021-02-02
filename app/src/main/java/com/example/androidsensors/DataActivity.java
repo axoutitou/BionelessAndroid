@@ -1,29 +1,19 @@
 package com.example.androidsensors;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.opencsv.CSVWriter;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Locale;
 
@@ -37,6 +27,8 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
     private String activityType;
     private String fileName;
     private CSVWriter writer;
+    private AccGyr currentmesure;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +36,14 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+
+        currentmesure = new AccGyr();
+
 
         fileName = "MouvementData";
         File storageDir = getExternalFilesDir("DATA");
-
         String date =  new SimpleDateFormat("dd-MM-yyyy HH-mm-ss", Locale.getDefault()).format(new Date());
         String filename = storageDir + File.separator + fileName + "-" + date + ".csv";
         try {
@@ -79,21 +75,13 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onResume() {
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
-        sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
         super.onResume();
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float dXacc = 0;
-        float dYacc = 0;
-        float dZacc = 0;
-
-        float dXgyr = 0;
-        float dYgyr = 0;
-        float dZgyr = 0;
-
         TextView accX = findViewById(R.id.accX);
         TextView accY = findViewById(R.id.accY);
         TextView accZ = findViewById(R.id.accZ);
@@ -105,35 +93,37 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         TextView timerTextView = findViewById(R.id.timer);
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            dXacc = event.values[0];
-            dYacc = event.values[1];
-            dZacc = event.values[2];
+            currentmesure.setdXacc(event.values[0]);
+            currentmesure.setdYacc(event.values[1]);
+            currentmesure.setdZacc(event.values[2]);
 
-            accX.setText(Float.toString(dXacc));
-            accY.setText(Float.toString(dYacc));
-            accZ.setText(Float.toString(dZacc));
+            accX.setText(Float.toString(currentmesure.getdXacc()));
+            accY.setText(Float.toString(currentmesure.getdYacc()));
+            accZ.setText(Float.toString(currentmesure.getdZacc()));
 
-            System.out.println("ACCELEROMETRE : Valeurs récupérés : x="+dXacc+" | y="+dYacc+" | z="+dZacc);
+            System.out.println("ACCELEROMETRE : Valeurs récupérés : x="+currentmesure.getdXacc()+" | y="+currentmesure.getdYacc()+" | z="+currentmesure.getdZacc());
         }
 
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            dXgyr = event.values[0];
-            dYgyr = event.values[1];
-            dZgyr = event.values[2];
+            currentmesure.setdXgyr(event.values[0]);
+            currentmesure.setdYgyr(event.values[1]);
+            currentmesure.setdZgyr(event.values[2]);
 
-            gyrX.setText(Float.toString(dXgyr));
-            gyrY.setText(Float.toString(dYgyr));
-            gyrZ.setText(Float.toString(dZgyr));
 
-            System.out.println("GYROSCOPE : Valeurs récupérés : x="+dXgyr+" | y="+dYgyr+" | z="+dZgyr);
+            gyrX.setText(Float.toString(currentmesure.getdXgyr()));
+            gyrY.setText(Float.toString(currentmesure.getdYgyr()));
+            gyrZ.setText(Float.toString(currentmesure.getdZgyr()));
+
+            System.out.println("GYROSCOPE : Valeurs récupérés : x="+currentmesure.getdXgyr()+" | y="+currentmesure.getdYgyr()+" | z="+currentmesure.getdZgyr());
         }
+
 
         Long instant = System.currentTimeMillis()-startTime;
         float floatInstant = (float)instant;
         timerTextView.setText(String.format("%.1f", floatInstant/1000) );
 
-        String[] values = {Float.toString(dXacc), Float.toString(dYacc), Float.toString(dZacc),
-                Float.toString(dXgyr), Float.toString(dYgyr), Float.toString(dZgyr),
+        String[] values = {Float.toString(currentmesure.getdXacc()), Float.toString(currentmesure.getdYacc()), Float.toString(currentmesure.getdZacc()),
+                Float.toString(currentmesure.getdXgyr()), Float.toString(currentmesure.getdYgyr()), Float.toString(currentmesure.getdZgyr()),
                 Float.toString(floatInstant), activityType};
         writer.writeNext(values);
 
