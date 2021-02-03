@@ -29,6 +29,14 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
     private CSVWriter writer;
     private AccGyr currentmesure;
 
+    private String fullFileName;
+    private String uniqueFileName;
+    private String filePath;
+
+    public static final String storageContainer = "azureml-blobstore-95bf6b49-8218-4ad1-9b11-f83ea245d4fe";
+    public static final String storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=XXXXXXXXX;AccountKey=XXXXXXXXX;EndpointSuffix=core.windows.net";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,9 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         File storageDir = getExternalFilesDir("DATA");
         String date =  new SimpleDateFormat("dd-MM-yyyy HH-mm-ss", Locale.getDefault()).format(new Date());
         String filename = storageDir + File.separator + fileName + "-" + date + ".csv";
+        fullFileName = filename;
+        uniqueFileName = fileName + "-" + date + ".csv";
+        filePath = storageDir + File.separator;
         try {
             FileWriter fileWriter = new FileWriter(filename, true);
             writer = new CSVWriter(fileWriter);
@@ -136,6 +147,9 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
 
     public void onStopClick(View view) throws IOException {
         writer.close();
+        new UploadFileTask().execute(fullFileName,uniqueFileName);
         this.finish();
     }
+
+
 }
