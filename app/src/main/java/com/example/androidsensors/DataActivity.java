@@ -1,5 +1,7 @@
 package com.example.androidsensors;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -8,7 +10,13 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.microsoft.azure.storage.blob.BlobInputStream;
+import com.microsoft.azure.storage.blob.BlobListingDetails;
 import com.opencsv.CSVWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -28,6 +36,7 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
     private String fileName;
     private CSVWriter writer;
     private AccGyr currentmesure;
+    private String filename = null;
 
 
     @Override
@@ -45,7 +54,7 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         fileName = "MouvementData";
         File storageDir = getExternalFilesDir("DATA");
         String date =  new SimpleDateFormat("dd-MM-yyyy HH-mm-ss", Locale.getDefault()).format(new Date());
-        String filename = storageDir + File.separator + fileName + "-" + date + ".csv";
+        filename = storageDir + File.separator + fileName + "-" + date + ".csv";
         try {
             FileWriter fileWriter = new FileWriter(filename, true);
             writer = new CSVWriter(fileWriter);
@@ -136,6 +145,42 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
 
     public void onStopClick(View view) throws IOException {
         writer.close();
+        Process p = null;
+        try {
+             p = new ProcessBuilder()
+                    .command("PathToYourScript")
+                    .start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(p!=null) p.destroy();
+        }
+
+
         this.finish();
     }
+
+  /*  private void alertDialog(){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setMessage("Do you want to upload the new CSV data file?");
+        dialog.setTitle("Upload");
+        new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,
+                                int which) {
+                Toast.makeText(getApplicationContext(),"Yes is clicked",Toast.LENGTH_LONG).show();
+                ((Activity) getBaseContext()).finish();
+            }
+        };
+        dialog.setNegativeButton("cancel",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(),"cancel is clicked",Toast.LENGTH_LONG).show();
+                ((Activity) getBaseContext()).finish();
+            }
+        });
+        AlertDialog alertDialog=dialog.create();
+        alertDialog.show();
+
+    }
+    */
 }
