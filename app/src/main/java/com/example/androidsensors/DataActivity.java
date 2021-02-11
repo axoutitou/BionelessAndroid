@@ -25,6 +25,7 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
     private Sensor gyroscope;
     private long startTime;
     private String activityType;
+    private String userId;
     private String fileName;
     private CSVWriter writer;
     private AccGyr currentmesure;
@@ -60,7 +61,7 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         try {
             FileWriter fileWriter = new FileWriter(filename, true);
             writer = new CSVWriter(fileWriter);
-            String[] headers = {"dX-acc", "dY-acc", "dZ-acc", "dX-gyr", "dY-gyr", "dZ-gyr", "time", "activityType"};
+            String[] headers = {"userId","dX-acc", "dY-acc", "dZ-acc", "dX-gyr", "dY-gyr", "dZ-gyr", "time", "activityType"};
             writer.writeNext(headers);
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,6 +75,9 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
             activityType = intent.getStringExtra("activityType");
             TextView activityText = findViewById(R.id.activity);
             activityText.setText("Enregistrement en cours pour l'activité : "+activityType);
+        }
+        if (intent.hasExtra("userId")){
+            userId = intent.getStringExtra("userId");
         }
     }
 
@@ -133,7 +137,7 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         float floatInstant = (float)instant;
         timerTextView.setText(String.format("%.1f", floatInstant/1000) );
 
-        String[] values = {Float.toString(currentmesure.getdXacc()), Float.toString(currentmesure.getdYacc()), Float.toString(currentmesure.getdZacc()),
+        String[] values = {userId, Float.toString(currentmesure.getdXacc()), Float.toString(currentmesure.getdYacc()), Float.toString(currentmesure.getdZacc()),
                 Float.toString(currentmesure.getdXgyr()), Float.toString(currentmesure.getdYgyr()), Float.toString(currentmesure.getdZgyr()),
                 Float.toString(floatInstant), activityType};
         writer.writeNext(values);
