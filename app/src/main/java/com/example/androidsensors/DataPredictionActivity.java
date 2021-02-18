@@ -1,29 +1,25 @@
 package com.example.androidsensors;
 
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.JsonWriter;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.gson.JsonObject;
-import com.opencsv.CSVWriter;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class DataPredictionActivity  extends AppCompatActivity implements SensorEventListener {
 
@@ -47,18 +43,35 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
         startTime = System.currentTimeMillis();
         currentMesure = new AccGyr();
 
+        setContentView(R.layout.prediction_activity);
+    }
+
+    @Override
+    protected void onPause() {
+        sensorManager.unregisterListener(this, accelerometer);
+        sensorManager.unregisterListener(this, gyroscope);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        super.onResume();
     }
 
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        TextView accX = findViewById(R.id.accX);
-        TextView accY = findViewById(R.id.accY);
-        TextView accZ = findViewById(R.id.accZ);
 
-        TextView gyrX = findViewById(R.id.gyrX);
-        TextView gyrY = findViewById(R.id.gyrY);
-        TextView gyrZ = findViewById(R.id.gyrZ);
+
+        TextView accX = findViewById(R.id.accXa);
+        TextView accY = findViewById(R.id.accYa);
+        TextView accZ = findViewById(R.id.accZa);
+
+        TextView gyrX = findViewById(R.id.gyrXa);
+        TextView gyrY = findViewById(R.id.gyrYa);
+        TextView gyrZ = findViewById(R.id.gyrZa);
 
         TextView timerTextView = findViewById(R.id.timer);
 
@@ -71,7 +84,7 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
             accY.setText(Float.toString(currentMesure.getdYacc()));
             accZ.setText(Float.toString(currentMesure.getdZacc()));
 
-            System.out.println("ACCELEROMETRE : Valeurs récupérés : x="+currentMesure.getdXacc()+" | y="+currentMesure.getdYacc()+" | z="+currentMesure.getdZacc());
+           // System.out.println("ACCELEROMETRE : Valeurs récupérés : x="+currentMesure.getdXacc()+" | y="+currentMesure.getdYacc()+" | z="+currentMesure.getdZacc());
         }
 
         if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
@@ -84,28 +97,27 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
             gyrY.setText(Float.toString(currentMesure.getdYgyr()));
             gyrZ.setText(Float.toString(currentMesure.getdZgyr()));
 
-            System.out.println("GYROSCOPE : Valeurs récupérés : x="+currentMesure.getdXgyr()+" | y="+currentMesure.getdYgyr()+" | z="+currentMesure.getdZgyr());
+         //   System.out.println("GYROSCOPE : Valeurs récupérés : x="+currentMesure.getdXgyr()+" | y="+currentMesure.getdYgyr()+" | z="+currentMesure.getdZgyr());
         }
         JSONObject jsonObject = new JSONObject();
         Long instant = System.currentTimeMillis()-startTime;
         float floatInstant = (float)instant;
         try {
-            jsonObject.put("dX-acc", currentMesure.getdXacc());
-            jsonObject.put("dY-acc", currentMesure.getdYacc());
-            jsonObject.put("dZ-acc", currentMesure.getdZacc());
-            jsonObject.put("dX-gyr", currentMesure.getdXgyr());
-            jsonObject.put("dY-gyr", currentMesure.getdYgyr());
-            jsonObject.put("dZ-gyr", currentMesure.getdZgyr());
-            jsonObject.put("time", floatInstant);
+            jsonObject.put("0", currentMesure.getdXacc());
+            jsonObject.put("1", currentMesure.getdYacc());
+            jsonObject.put("2", currentMesure.getdZacc());
+            jsonObject.put("3", currentMesure.getdXgyr());
+            jsonObject.put("4", currentMesure.getdYgyr());
+            jsonObject.put("5", currentMesure.getdZgyr());
+            jsonObject.put("6", floatInstant);
             jsonArray.put(jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         if(floatInstant > 500){
-            //send data to predict class
-            new SendDeviceDetails().execute("http://52.88.194.67:8080/IOTProjectServer/registerDevice", jsonArray.toString());
-            // Clean array
+            sendPost(jsonArray.toString());
+            startTime = System.currentTimeMillis();
             jsonArray = new JSONArray();
         }
 
@@ -114,5 +126,53 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public void sendPost(String jsonElement) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL("http://8b95afc9-e4d1-4ae6-a2eb-1ec7dc3a8668.westeurope.azurecontainer.io/score");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    conn.setRequestProperty("Accept","application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                    os.writeBytes(jsonElement);
+                    os.flush();
+                    os.close();
+
+                    Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+                    System.out.println("STATUS :" + String.valueOf(conn.getResponseCode()));
+
+                    StringBuilder stringBuilder = new StringBuilder();
+                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStreamReader streamReader = new InputStreamReader(conn.getInputStream());
+                        BufferedReader bufferedReader = new BufferedReader(streamReader);
+                        String response = null;
+                        while ((response = bufferedReader.readLine()) != null) {
+                            stringBuilder.append(response + "\n");
+                        }
+                        bufferedReader.close();
+
+                        Log.d("CONTENT", stringBuilder.toString());
+                    }
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+    }
+
+    public void onStopClick(View view) {
+        this.finish();
     }
 }

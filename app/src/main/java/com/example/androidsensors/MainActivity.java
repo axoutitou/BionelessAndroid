@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         intentData.putExtra("userId", userIdString);
 
         startActivity(intentData);
+    }
 
+    public void onStop(View view){
+        this.finish();
     }
 }
