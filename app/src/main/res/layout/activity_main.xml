@@ -18,7 +18,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:gravity="center"
             android:text="@string/textViewDescr"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
@@ -27,7 +27,7 @@
             android:id="@+id/activityType"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5">
+            android:layout_weight="4">
 
             <RadioButton
                 android:id="@+id/marcher"
@@ -52,44 +52,78 @@
                 android:id="@+id/monterMarches"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Monter des marches" />
+                android:text="Monter" />
 
             <RadioButton
                 android:id="@+id/descendreMarches"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Descendre des marches" />
+                android:text="Descendre" />
+
         </RadioGroup>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="50px"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="300px"
-            android:orientation="vertical"
-            android:weightSum="7">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Sélectionner l'utilisateur :"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="245dp"
+        <RadioGroup
+            android:id="@+id/userId"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioKevin"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Veuillez renseigner votre identifiant" />
+                android:layout_weight="1"
+                android:checked="true"
+                android:tag="1"
+                android:text="Kévin" />
 
-            <EditText
-                android:id="@+id/userId"
-                android:layout_width="250dp"
+            <RadioButton
+                android:id="@+id/radioAxel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="number" />
+                android:layout_weight="1"
+                android:tag="2"
+                android:text="Axel" />
 
-        </LinearLayout>
+            <RadioButton
+                android:id="@+id/radioLavy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:tag="3"
+                android:text="Lavannya" />
+
+            <RadioButton
+                android:id="@+id/radioAgigi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:tag="4"
+                android:text="Agilan " />
+
+            <RadioButton
+                android:id="@+id/radioAlex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:tag="5"
+                android:text="Alex" />
+        </RadioGroup>
 
         <Button
             android:id="@+id/buttonStartSensors"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:onClick="onStartClick"
