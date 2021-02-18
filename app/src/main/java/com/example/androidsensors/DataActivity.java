@@ -35,7 +35,7 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
     private String filePath;
 
     public static final String storageContainer = "azureml-blobstore-95bf6b49-8218-4ad1-9b11-f83ea245d4fe";
-    public static final String storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=XXXXXXXXX;AccountKey=XXXXXXXXX;EndpointSuffix=core.windows.net";
+    public static final String storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=XXXXX;AccountKey=XXXX;EndpointSuffix=core.windows.net";
 
 
 
@@ -61,7 +61,7 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
         try {
             FileWriter fileWriter = new FileWriter(filename, true);
             writer = new CSVWriter(fileWriter);
-            String[] headers = {"userId","dX-acc", "dY-acc", "dZ-acc", "dX-gyr", "dY-gyr", "dZ-gyr", "time", "activityType"};
+            String[] headers = {"userId", "dX-acc", "dY-acc", "dZ-acc", "dX-gyr", "dY-gyr", "dZ-gyr", "time", "activityType"};
             writer.writeNext(headers);
         } catch (IOException e) {
             e.printStackTrace();

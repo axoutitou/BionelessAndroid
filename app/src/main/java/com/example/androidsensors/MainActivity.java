@@ -23,19 +23,18 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intentData   = new Intent(getApplicationContext(), DataActivity.class);
         RadioGroup activityType = findViewById(R.id.activityType);
-        RadioButton selectedButton = findViewById(activityType.getCheckedRadioButtonId());
-        intentData.putExtra("activityType", selectedButton.getText());
+        RadioButton selectedActivity = findViewById(activityType.getCheckedRadioButtonId());
+        intentData.putExtra("activityType", selectedActivity.getText());
 
-        EditText id = (EditText) findViewById(R.id.userId);
+        RadioGroup userId = findViewById(R.id.userId);
+        RadioButton selectedButton = findViewById(userId.getCheckedRadioButtonId());
+        String userIdString = selectedButton.getTag().toString();
+        intentData.putExtra("userId", userIdString);
 
-        Integer userId = (null != id.getText().toString()
-                &&  !id.getText().toString().isEmpty()) ?  Integer.parseInt(id.getText().toString()) : null;
-        if(null == userId){
-            ((TextView)findViewById(R.id.textView2)).setBackgroundColor(Color.RED);
-        }else{
-            intentData.putExtra("userId", userId.toString());
-            startActivity(intentData);
-        }
+        startActivity(intentData);
+    }
 
+    public void onStop(View view){
+        this.finish();
     }
 }
