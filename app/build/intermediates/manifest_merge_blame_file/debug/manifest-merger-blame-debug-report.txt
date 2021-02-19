@@ -1,0 +1,116 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.androidsensors"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+8-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="29" />
+9-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+11-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:5:5-80
+11-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:5:22-78
+12    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+12-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:6:5-78
+12-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:6:22-76
+13    <uses-permission android:name="android.permission.INTERNET" />
+13-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:7:5-66
+13-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:7:22-64
+14    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+14-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:8:5-78
+14-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:8:22-76
+15    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+15-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:9:5-81
+15-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:9:22-78
+16    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+16-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:10:5-80
+16-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:10:22-77
+17
+18    <application
+18-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:11:5-34:19
+19        android:allowBackup="true"
+19-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:12:9-35
+20        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+20-->[androidx.core:core:1.1.0] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\ae31cc97a3f9383e0242537d69427d3a\core-1.1.0\AndroidManifest.xml:24:18-86
+21        android:debuggable="true"
+22        android:icon="@mipmap/ic_launcher"
+22-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:13:9-43
+23        android:label="@string/app_name"
+23-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:14:9-41
+24        android:roundIcon="@mipmap/ic_launcher_round"
+24-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:15:9-54
+25        android:supportsRtl="true"
+25-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:16:9-35
+26        android:testOnly="true"
+27        android:theme="@style/Theme.AndroidSensors"
+27-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:18:9-52
+28        android:usesCleartextTraffic="true" >
+28-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:17:9-44
+29        <activity
+29-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:20:9-26:20
+30            android:name="com.example.androidsensors.HomeActivity"
+30-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:20:19-47
+31            android:screenOrientation="portrait" >
+31-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:21:13-49
+32            <intent-filter>
+32-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:22:13-25:29
+33                <action android:name="android.intent.action.MAIN" />
+33-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:23:17-69
+33-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:23:25-66
+34
+35                <category android:name="android.intent.category.LAUNCHER" />
+35-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:24:17-77
+35-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:24:27-74
+36            </intent-filter>
+37        </activity>
+38        <activity
+38-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:28:9-29:57
+39            android:name="com.example.androidsensors.DataActivity"
+39-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:28:19-47
+40            android:screenOrientation="portrait" />
+40-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:29:9-45
+41        <activity
+41-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:30:9-31:62
+42            android:name="com.example.androidsensors.MainActivity"
+42-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:30:19-47
+43            android:screenOrientation="portrait" >
+43-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:31:13-49
+44        </activity>
+45        <activity
+45-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:32:9-33:61
+46            android:name="com.example.androidsensors.DataPredictionActivity"
+46-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:32:19-57
+47            android:screenOrientation="portrait" />
+47-->C:\Users\fpa\StudioProjects\Bioneless\app\src\main\AndroidManifest.xml:33:13-49
+48        <!-- MSAL activity that will be used to process all the auth related logic -->
+49        <activity
+49-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:16:9-18:77
+50            android:name="com.microsoft.identity.client.AuthenticationActivity"
+50-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:17:13-80
+51            android:configChanges="orientation|keyboardHidden|screenSize" />
+51-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:18:13-74
+52        <activity
+52-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:19:9-23:47
+53            android:name="com.microsoft.identity.common.internal.providers.oauth2.AuthorizationActivity"
+53-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:20:13-105
+54            android:configChanges="orientation|keyboardHidden|screenSize"
+54-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:21:13-74
+55            android:exported="false"
+55-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:22:13-37
+56            android:launchMode="singleTask" /> <!-- MSAL will use system webview (custom tab) to render the sign-in page, BrowserTabActivity is to get response back from System Webview. Multiple apps on the device could integrate MSAL, OS will check which BrowserTabActivity can handle the intent based on the intent filter declared, so this activity has to be exported. -->
+56-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:23:13-44
+57        <activity
+57-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:26:9-28:39
+58            android:name="com.microsoft.identity.client.BrowserTabActivity"
+58-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:27:13-76
+59            android:exported="true" /> <!-- Activity to invoke an interactive request to the intent passed by ad-accounts(Broker) -->
+59-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:28:13-36
+60        <activity android:name="com.microsoft.identity.client.internal.controllers.BrokerActivity" />
+60-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:31:9-102
+60-->[com.microsoft.identity.client:msal:0.3.1-alpha] C:\Users\fpa\.gradle\caches\transforms-2\files-2.1\66de263643e1ffd67753655848c4bb41\jetified-msal-0.3.1-alpha\AndroidManifest.xml:31:19-99
+61    </application>
+62
+63</manifest>

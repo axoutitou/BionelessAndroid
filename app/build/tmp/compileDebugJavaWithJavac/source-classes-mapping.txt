@@ -1,0 +1,15 @@
+com/example/androidsensors/BuildConfig.java
+ com.example.androidsensors.BuildConfig
+com/example/androidsensors/AccGyr.java
+ com.example.androidsensors.AccGyr
+com/example/androidsensors/DataActivity.java
+ com.example.androidsensors.DataActivity
+com/example/androidsensors/MainActivity.java
+ com.example.androidsensors.MainActivity
+com/example/androidsensors/UploadFileTask.java
+ com.example.androidsensors.UploadFileTask
+com/example/androidsensors/DataPredictionActivity.java
+ com.example.androidsensors.DataPredictionActivity
+ com.example.androidsensors.DataPredictionActivity$1
+com/example/androidsensors/HomeActivity.java
+ com.example.androidsensors.HomeActivity
