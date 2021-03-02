@@ -230,6 +230,7 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
                 int max = Collections.max(listFq);
 
                 @SuppressLint({"NewApi", "LocalSuppress"}) String maxMouvement = Collections.max(mapFq.entrySet(), Map.Entry.comparingByValue()).getKey().toString();
+                Log.d("maxMouvement", maxMouvement);
                 Log.d("MAAAAAAXXX", String.valueOf(max));
 
                 try {
