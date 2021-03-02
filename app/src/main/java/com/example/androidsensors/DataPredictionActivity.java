@@ -12,23 +12,31 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.opencsv.CSVWriter;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class DataPredictionActivity  extends AppCompatActivity implements SensorEventListener {
@@ -44,7 +52,17 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
     private static PrintWriter printWriter;
 
     String message ="ON TESTE FORT";
-    private static String ip = "192.168.1.99";
+    private static String ip = "172.20.10.3";
+
+    private String fullFileName;
+    private String uniqueFileName;
+    private String filePath;
+    private String fileName;
+    private CSVWriter writer;
+
+    public static final String storageContainer = "azureml-blobstore-95bf6b49-8218-4ad1-9b11-f83ea245d4fe";
+    public static final String storageConnectionString = "DefaultEndpointsProtocol=https;AccountName=XXXXX;AccountKey=XXXX;EndpointSuffix=core.windows.net";
+
 
 
     @Override
@@ -58,6 +76,23 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
         sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
         startTime = System.currentTimeMillis();
         currentMesure = new AccGyr();
+
+        // Partie enregistrement CSV
+        fileName = "MouvementData";
+        File storageDir = getExternalFilesDir("DATA");
+        String date =  new SimpleDateFormat("dd-MM-yyyy HH-mm-ss", Locale.getDefault()).format(new Date());
+        String filename = storageDir + File.separator + fileName + "-" + date + ".csv";
+        fullFileName = filename;
+        uniqueFileName = fileName + "-" + date + ".csv";
+        filePath = storageDir + File.separator;
+        try {
+            FileWriter fileWriter = new FileWriter(filename, true);
+            writer = new CSVWriter(fileWriter);
+            String[] headers = {"userId", "dX-acc", "dY-acc", "dZ-acc", "dX-gyr", "dY-gyr", "dZ-gyr", "time", "activityType"};
+            writer.writeNext(headers);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         setContentView(R.layout.prediction_activity);
     }
@@ -115,23 +150,32 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
 
          //   System.out.println("GYROSCOPE : Valeurs récupérés : x="+currentMesure.getdXgyr()+" | y="+currentMesure.getdYgyr()+" | z="+currentMesure.getdZgyr());
         }
+
         JSONObject jsonObject = new JSONObject();
         Long instant = System.currentTimeMillis()-startTime;
         float floatInstant = (float)instant;
         try {
-            jsonObject.put("0", currentMesure.getdXacc());
-            jsonObject.put("1", currentMesure.getdYacc());
-            jsonObject.put("2", currentMesure.getdZacc());
-            jsonObject.put("3", currentMesure.getdXgyr());
-            jsonObject.put("4", currentMesure.getdYgyr());
-            jsonObject.put("5", currentMesure.getdZgyr());
+            jsonObject.put("0", Float.toString(currentMesure.getdXacc()));
+            jsonObject.put("1", Float.toString(currentMesure.getdYacc()));
+            jsonObject.put("2", Float.toString(currentMesure.getdZacc()));
+            jsonObject.put("3", Float.toString(currentMesure.getdXgyr()));
+            jsonObject.put("4", Float.toString(currentMesure.getdYgyr()));
+            jsonObject.put("5", Float.toString(currentMesure.getdZgyr()));
             jsonObject.put("6", floatInstant);
             jsonArray.put(jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        if(floatInstant > 500){
+        timerTextView.setText(String.format("%.1f", floatInstant/1000) );
+
+        String[] values = {"1", Float.toString(currentMesure.getdXacc()), Float.toString(currentMesure.getdYacc()), Float.toString(currentMesure.getdZacc()),
+                Float.toString(currentMesure.getdXgyr()), Float.toString(currentMesure.getdYgyr()), Float.toString(currentMesure.getdZgyr()),
+                Float.toString(floatInstant), "Immobile"};
+        writer.writeNext(values);
+
+        if(floatInstant > 10000){
+            System.out.println(jsonArray.toString());
             sendPost(jsonArray.toString());
             jsonArray = new JSONArray();
             //getMaxOccurenceActivity(jsonArray.toString());
@@ -195,7 +239,9 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
         thread.start();
     }
 
-    public void onStopClick(View view) {
+    public void onStopClick(View view) throws IOException {
+        sendPost(jsonArray.toString());
+        writer.close();
         this.finish();
     }
 
