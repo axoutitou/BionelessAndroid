@@ -15,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.opencsv.CSVWriter;
 
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,6 +62,8 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
     private String uniqueFileName;
     private String filePath;
     private String fileName;
+    private Integer frequenceEnvoi = 500;
+    private Integer time = frequenceEnvoi;
     private CSVWriter writer;
 
     public static final String storageContainer = "azureml-blobstore-95bf6b49-8218-4ad1-9b11-f83ea245d4fe";
@@ -88,7 +94,8 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
         try {
             FileWriter fileWriter = new FileWriter(filename, true);
             writer = new CSVWriter(fileWriter);
-            String[] headers = {"userId", "dX-acc", "dY-acc", "dZ-acc", "dX-gyr", "dY-gyr", "dZ-gyr", "time", "activityType"};
+            //String[] headers = {"userId", "dX-acc", "dY-acc", "dZ-acc", "dX-gyr", "dY-gyr", "dZ-gyr", "time", "activityType"};
+            String[] headers = {"userId", "dX-acc", "dY-acc", "dZ-acc", "dX-gyr", "dY-gyr", "dZ-gyr"};
             writer.writeNext(headers);
         } catch (IOException e) {
             e.printStackTrace();
@@ -161,7 +168,6 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
             jsonObject.put("3", Float.toString(currentMesure.getdXgyr()));
             jsonObject.put("4", Float.toString(currentMesure.getdYgyr()));
             jsonObject.put("5", Float.toString(currentMesure.getdZgyr()));
-            jsonObject.put("6", floatInstant);
             jsonArray.put(jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -170,16 +176,16 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
         timerTextView.setText(String.format("%.1f", floatInstant/1000) );
 
         String[] values = {"1", Float.toString(currentMesure.getdXacc()), Float.toString(currentMesure.getdYacc()), Float.toString(currentMesure.getdZacc()),
-                Float.toString(currentMesure.getdXgyr()), Float.toString(currentMesure.getdYgyr()), Float.toString(currentMesure.getdZgyr()),
-                Float.toString(floatInstant), "Immobile"};
+                Float.toString(currentMesure.getdXgyr()), Float.toString(currentMesure.getdYgyr()), Float.toString(currentMesure.getdZgyr())};
         writer.writeNext(values);
 
-        if(floatInstant > 10000){
+
+        if(floatInstant > time){
             System.out.println(jsonArray.toString());
             sendPost(jsonArray.toString());
             jsonArray = new JSONArray();
+            time = time + frequenceEnvoi;
             //getMaxOccurenceActivity(jsonArray.toString());
-            startTime = System.currentTimeMillis();
         }
 
     }
@@ -195,7 +201,7 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
             public void run() {
 
                 try {
-                    URL url = new URL("http://8b95afc9-e4d1-4ae6-a2eb-1ec7dc3a8668.westeurope.azurecontainer.io/score");
+                    URL url = new URL("http://8be0dbc9-8b18-4e2e-b9ce-77c0b7e0b626.westeurope.azurecontainer.io/score");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
@@ -221,7 +227,8 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
                         }
                         bufferedReader.close();
 
-                        getMaxOccurenceActivity(stringBuilder.toString());
+                        //getMaxOccurenceActivity(stringBuilder.toString());
+                        getMaxMouvement(stringBuilder.toString());
 
                         //Log.d("CONTENT", stringBuilder.toString());
 
@@ -240,8 +247,28 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
     }
 
     public void onStopClick(View view) throws IOException {
-        sendPost(jsonArray.toString());
+        //sendPost(jsonArray.toString());
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    s = new Socket(ip, 5000);
+                    printWriter = new PrintWriter(s.getOutputStream());
+                    printWriter.write("index");
+                    printWriter.flush();
+                    printWriter.close();
+                    s.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+
+
         writer.close();
+
         this.finish();
     }
 
@@ -300,5 +327,63 @@ public class DataPredictionActivity  extends AppCompatActivity implements Sensor
 
     }
 
+    /*private String getMaxMouvement(String data){
+
+
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject json = (JSONObject) parser.parse(data);
+            HashMap myMap = (HashMap)toMap(json);
+            int max = Collections.max(myMap);
+
+        } catch (ParseException | JSONException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    private void getMaxMouvement(String data){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HashMap myHasMap = new HashMap<String, Integer>();
+
+                /*String tmpData;
+                tmpData = data.replace("{", "");
+                tmpData = data.replace("}", "");
+                tmpData = data.replace("[", "");
+                tmpData = data.replace("]", "");
+                tmpData = data.replace("/", "");
+                tmpData = data.replace("\\", "");
+                tmpData = data.replace("\"", "");*/
+
+                String tmpData = data.replace("\"","").replace("[","").replace("]","").replace(" ","").replace("\n","").replace("\\","")
+                        .replace("}","").replace("{","");
+
+                String[] lignes = tmpData.split(",");
+                String key;
+                Integer value;
+                for (int i = 0; i < lignes.length; i++) {
+                    key = lignes[i].split(":")[0];
+                    value = Integer.valueOf(lignes[i].split(":")[1]);
+                    myHasMap.put(key, value);
+                }
+                @SuppressLint({"NewApi", "LocalSuppress"}) String maxMouvement = Collections.max(myHasMap.entrySet(), Map.Entry.comparingByValue()).getKey().toString();
+
+                try {
+                    s = new Socket(ip, 5000);
+                    printWriter = new PrintWriter(s.getOutputStream());
+                    printWriter.write(maxMouvement);
+                    printWriter.flush();
+                    printWriter.close();
+                    s.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+        thread.start();
+    }
 
 }

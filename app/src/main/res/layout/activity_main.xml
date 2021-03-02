@@ -127,7 +127,9 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:onClick="onStartClick"
-            android:text="@string/startDataCollectionButton" />
+            android:text="@string/startDataCollectionButton"
+            app:backgroundTint="@color/vert" />
+
         <Button
             android:id="@+id/buttonReturn"
             android:layout_width="match_parent"
@@ -135,7 +137,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:onClick="onStop"
-            android:text="@string/returnButton" />
+            android:text="@string/returnButton"
+            app:backgroundTint="@color/vert" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

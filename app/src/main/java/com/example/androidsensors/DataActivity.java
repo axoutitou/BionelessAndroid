@@ -151,7 +151,7 @@ public class DataActivity extends AppCompatActivity implements SensorEventListen
 
     public void onStopClick(View view) throws IOException {
         writer.close();
-        new UploadFileTask().execute(fullFileName,uniqueFileName);
+        //new UploadFileTask().execute(fullFileName,uniqueFileName);
         this.finish();
     }
 

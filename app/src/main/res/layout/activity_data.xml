@@ -185,7 +185,8 @@
                 android:layout_weight="2"
                 android:gravity="center"
                 android:onClick="onStopClick"
-                android:text="Arrêter" />
+                android:text="Arrêter"
+                app:backgroundTint="#46BAB1" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

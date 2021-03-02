@@ -17,6 +17,7 @@ public class AccGyr {
         dYgyr = 0;
         dZgyr = 0;
     }
+    
     public float getdXacc() {
         return dXacc;
     }
